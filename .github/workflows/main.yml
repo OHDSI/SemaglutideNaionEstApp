@@ -1,9 +1,6 @@
 name: build-and-push-ohdsi-docker-image-to-Docker-Hub
 
 on:
-  push:
-    branches:
-      - '**'
   release:
     types: [published]
   workflow_dispatch:
