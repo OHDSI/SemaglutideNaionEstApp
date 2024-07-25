@@ -59,6 +59,7 @@ jobs:
             APP_NAME=${{ env.APP_NAME }}
             GIT_BRANCH=${{ steps.docker_meta.outputs.version }}
             GIT_COMMIT_ID_ABBREV=${{ steps.build_params.outputs.sha8 }}
+            GITHUB_PAT=${{ secrets.GH_TOKEN }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: |
             ${{ steps.docker_meta.outputs.labels }}
