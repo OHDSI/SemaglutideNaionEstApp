@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  semaglutidenaionestapp:
+    image: ohdsi/semaglutidenaionestapp:1.0.0
+    env_file: .env
+    build:
+      context: .
+      args:
+        APP_NAME: SemaglutideNaionEstApp
+    ports:
+      - "3838:3838"
