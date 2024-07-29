@@ -55,11 +55,12 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
           platforms: linux/amd64,linux/arm64
           push: true
+          secrets: |
+            build_github_pat=${{ secrets.GITHUBPAT }}
           build-args: |
             APP_NAME=${{ env.APP_NAME }}
             GIT_BRANCH=${{ steps.docker_meta.outputs.version }}
             GIT_COMMIT_ID_ABBREV=${{ steps.build_params.outputs.sha8 }}
-            GITHUB_PAT=${{ secrets.GH_TOKEN }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: |
             ${{ steps.docker_meta.outputs.labels }}

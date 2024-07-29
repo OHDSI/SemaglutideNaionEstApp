@@ -29,7 +29,7 @@ serverStr <- paste0(Sys.getenv("shinydbServer"), "/", Sys.getenv("shinydbDatabas
 cli::cli_alert_info("Connecting to {serverStr}")
 connectionDetails <- DatabaseConnector::createConnectionDetails(
   dbms = "postgresql",
-  server = serverStr, #Sys.getenv("shinydbServer"),
+  server = serverStr,
   port = Sys.getenv("shinydbPort"),
   user = "shinyproxy",
   password = Sys.getenv("shinydbPw")

@@ -1,5 +1,5 @@
 # get shiny server and R from the rocker project
-FROM ohdsi/broadsea-shiny:latest
+FROM ohdsi/broadsea-shiny:1.0.0
 
 # JNJ Specific 
 # RUN apt-get install -y ca-certificates
@@ -25,11 +25,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # install R packages required
-RUN R -e 'install.packages(c("remotes", "rJava", "dplyr"))'
+RUN R -e 'install.packages(c("remotes", "rJava", "dplyr", "DatabaseConnector", "ggplot2", "plotly", "shinyWidgets"), repos="http://cran.rstudio.com/")'
 
 RUN R CMD javareconf
 
-RUN R -e "install.packages('dplyr', repos='http://cran.rstudio.com/')"
 # Set workdir and copy app files
 WORKDIR /srv/shiny-server/${APP_NAME}
 
@@ -38,10 +37,13 @@ COPY ./app.R .
 
 ARG GITHUB_PAT
 ENV GITHUB_PAT=$GITHUB_PAT
-RUN R -e 'remotes::install_github("OHDSI/DatabaseConnector")'
-RUN R -e 'remotes::install_github("OHDSI/OhdsiShinyModules", ref="estimation-updated")'
-RUN R -e 'remotes::install_github("OHDSI/ShinyAppBuilder", ref="estimation")'
-RUN R -e 'install.packages(c("ggplot2", "plotly", "shinyWidgets"), repos="http://cran.rstudio.com/")'
+RUN --mount=type=secret,id=build_github_pat \
+	cp /usr/local/lib/R/etc/Renviron /tmp/Renviron \
+        && echo "GITHUB_PAT=$(cat /run/secrets/build_github_pat)" >> /usr/local/lib/R/etc/Renviron \
+        && R -e "remotes::install_github('OHDSI/OhdsiShinyModules', ref='estimation-updated')" \
+        && R -e "remotes::install_github('OHDSI/ShinyAppBuilder', ref='estimation')" \
+        && cp /tmp/Renviron /usr/local/lib/R/etc/Renviron
+
 ENV DATABASECONNECTOR_JAR_FOLDER /root
 RUN R -e "DatabaseConnector::downloadJdbcDrivers('postgresql', pathToDriver='/root')"
 
