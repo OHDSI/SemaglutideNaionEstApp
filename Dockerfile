@@ -35,8 +35,6 @@ WORKDIR /srv/shiny-server/${APP_NAME}
 # copy the app directory into the image
 COPY ./app.R .
 
-ARG GITHUB_PAT
-ENV GITHUB_PAT=$GITHUB_PAT
 RUN --mount=type=secret,id=build_github_pat \
 	cp /usr/local/lib/R/etc/Renviron /tmp/Renviron \
         && echo "GITHUB_PAT=$(cat /run/secrets/build_github_pat)" >> /usr/local/lib/R/etc/Renviron \
